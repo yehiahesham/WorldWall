@@ -26,7 +26,9 @@ SECRET_KEY = 'vkni&+7w=%-w3@zwsl$1=xscf&!iqgwxgac66phv38vxqa^+dj'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-LOGIN_REDIRECT_URL = 'wall/index'
+LOGIN_REDIRECT_URL = 'wall:home'
+LOGOUT_REDIRECT_URL = 'wall:home'
+# LOGIN_REDIRECT_URL = 'wall:index'
 
 
 # Application definition
@@ -56,7 +58,9 @@ ROOT_URLCONF = 'world.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+        os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

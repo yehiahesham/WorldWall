@@ -1,22 +1,26 @@
-<h1> The Wolrd Wall</h1>
-<h2>The one and & only one for everyone </h2>
+<title> The Wolrd Wall</title>
+<h2>The one & only one for everyone </h2>
 
-<a href="{% url 'wall:signup' %}" > Signup</a> / <a href="{% url 'wall:login' %}">Signin</a>
-
-<h3> Status</h3>
-{% csrf_token %}
-    <label for="messages_txt">What do you have in mind ?  </label><br />
-    <input type="text" name="messages_txt" id="messages_txt" value="" />
-    <input type="submit" value="Publish" />
-</form>
-
+{% if user.is_authenticated %}
+  Hi <a href="{% url 'wall:profile' user.id %}">  {{ user.username }}!
+  <p><a href="{% url 'wall:logout' %}">logout</a></p>
+  <h3> Status </h3>
+  {% csrf_token %}
+      <label for="messages_txt">What do you have in mind ?  </label><br />
+      <input type="text" name="messages_txt" id="messages_txt" value="" />
+      <input type="submit" value="Publish" />
+  </form>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'wall:signup' %}" > Signup</a> / <a href="{% url 'wall:login' %}">Signin</a>
+{% endif %}
 
 <h3> Publications</h3>
 {% if comments %}
     <ul>
       {% for message in comments %}
         <li>
-            {{ message.messages_text}} {{ message.messages_date}} ~ <a href="{% url 'wall:profile' message.user_id.id %}"> {{message.user_id}}  </a>
+            "{{ message.messages_text}}". {{ message.messages_date}} ~ <a href="{% url 'wall:profile' message.user_id.id %}"> {{message.user_id}}  </a>
         </li>
       {% endfor %}
     </ul>
