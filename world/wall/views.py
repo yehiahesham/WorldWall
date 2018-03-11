@@ -42,9 +42,13 @@ class index(generic.ListView):
         """Return ALL published questions ."""
         return Message.objects.order_by('-messages_date')
 
-class Profile(generic.DetailView):
-        model = User
-        template_name = 'wall/profile.html'
+def Profile(request,pk):
+        userid=get_object_or_404(User, pk=pk)
+        return render(request,'wall/profile.html',
+            context={
+            'user':userid,
+            'comments': list(Message.objects.filter(user_id=pk).order_by('-messages_date'))
+            })
 
 @login_required
 def publish(request):

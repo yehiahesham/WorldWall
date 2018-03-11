@@ -1,4 +1,18 @@
 <title> The Wolrd Wall</title>
-<h2>You Have Reached {{ user }}</h2>
+<h2>You Have Reached {{ user.get_full_name }}</h2>
 
-Contact via <a href="mailto:{{user.email}} " >{{user}}'s Mail</a>
+
+Contact via <a href="mailto:{{user.email}} " >{{user.get_full_name}}'s Mail</a>
+
+{% if comments %}
+<h3>{{ user.get_full_name }} Said the Following </h3>
+    <ul>
+      {% for message in comments %}
+        <li>
+            "{{ message.messages_text}}" . {{ message.messages_date}}  </a>
+        </li>
+      {% endfor %}
+    </ul>
+{% else %}
+    <p>No texts are available.</p>
+{% endif %}
