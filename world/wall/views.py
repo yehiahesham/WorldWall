@@ -9,14 +9,30 @@ from django.core.mail import send_mail
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from wall.forms import SignUpForm
 from .models import *
 
-# from django.template import loader
-
-class SignUp(generic.CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy('wall:login')
-    template_name = 'wall/signup.html'
+def SignUp(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            email = form.cleaned_data.get('email')
+            user = authenticate(username=username, password=raw_password, email=email)
+            send_mail(
+                'Wellcome '+username+" !",
+                'Thanks For Joinng the Wall .',
+                'noreply@WorldWall.com',
+                [email],
+                fail_silently=False,
+            )
+            return HttpResponseRedirect(reverse_lazy('wall:login',))
+    else:
+        form = SignUpForm()
+    return render(request, 'wall/signup.html', {'form': form})
 
 class index(generic.ListView):
     template_name = 'wall/index.html'
@@ -29,3 +45,9 @@ class index(generic.ListView):
 class Profile(generic.DetailView):
         model = User
         template_name = 'wall/profile.html'
+
+@login_required
+def publish(request):
+        new_message = Message(user_id =request.user, messages_text=request.POST['message_txt'], messages_date=timezone.now())
+        new_message.save()
+        return HttpResponseRedirect(reverse('wall:home', ))

@@ -5,9 +5,10 @@
   Hi <a href="{% url 'wall:profile' user.id %}">  {{ user.username }}!
   <p><a href="{% url 'wall:logout' %}">logout</a></p>
   <h3> Status </h3>
+  <form action="{% url 'wall:publish' %}" method="post">
   {% csrf_token %}
-      <label for="messages_txt">What do you have in mind ?  </label><br />
-      <input type="text" name="messages_txt" id="messages_txt" value="" />
+      <label for="message_txt">What do you have in mind ?  </label><br />
+      <input type="text" name="message_txt" id="messages_txt" value="" />
       <input type="submit" value="Publish" />
   </form>
 {% else %}
