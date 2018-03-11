@@ -9,7 +9,6 @@ from django.core.mail import send_mail
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from wall.forms import AuthenticateForm, UserCreateForm
 from .models import *
 
 # from django.template import loader
