@@ -16,12 +16,17 @@ from .models import *
 def SignUp(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
+
+        #Validating & Extracting Inputs from form
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             email = form.cleaned_data.get('email')
+
             user = authenticate(username=username, password=raw_password, email=email)
+
+            #Sending Email
             send_mail(
                 'Wellcome '+username+" !",
                 'Thanks For Joinng the Wall .',
@@ -29,8 +34,11 @@ def SignUp(request):
                 [email],
                 fail_silently=False,
             )
+
+            #Login Now
             return HttpResponseRedirect(reverse_lazy('wall:login',))
     else:
+        # try again with the form if inputs aren't valid
         form = SignUpForm()
     return render(request, 'wall/signup.html', {'form': form})
 
@@ -39,10 +47,11 @@ class index(generic.ListView):
     context_object_name = 'comments'
 
     def get_queryset(self):
-        """Return ALL published questions ."""
+        """Return ALL published questions Ordered by the date ."""
         return Message.objects.order_by('-messages_date')
 
 def Profile(request,pk):
+        """User profiles with their publications and info like email & name"""
         userid=get_object_or_404(User, pk=pk)
         return render(request,'wall/profile.html',
             context={
@@ -52,6 +61,8 @@ def Profile(request,pk):
 
 @login_required
 def publish(request):
-        new_message = Message(user_id =request.user, messages_text=request.POST['message_txt'], messages_date=timezone.now())
-        new_message.save()
+        """Method to puclish on wall what user wants to say """
+        if(request.POST['message_txt']!=""):
+                new_message = Message(user_id =request.user, messages_text=request.POST['message_txt'], messages_date=timezone.now())
+                new_message.save()
         return HttpResponseRedirect(reverse('wall:home', ))
